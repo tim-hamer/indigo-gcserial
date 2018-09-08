@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Actions>
+  <Action id="sendCommand" deviceFilter="self">
+    <Name>Send Command</Name>
+    <CallbackMethod>sendCommand</CallbackMethod>
+    <ConfigUI>
+      <Field type="textfield" id="command" defaultValue="item2">
+        <Label>Command:</Label>
+      </Field>
+    </ConfigUI>
+  </Action>
+</Actions>
