@@ -1,7 +1,7 @@
 #! /usr/bin/env python # -*- coding: utf-8 -*-
 ####################
 
-import itach
+from itach import *
 
 class Plugin(indigo.PluginBase):
 
@@ -10,7 +10,6 @@ class Plugin(indigo.PluginBase):
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
         indigo.PluginBase.__init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs)
         self.debug = True
-        itach = iTach(ip)
 
 	def __del__(self):
 		indigo.PluginBase.__del__(self)
@@ -25,6 +24,7 @@ class Plugin(indigo.PluginBase):
 
     def sendCommand(self, action, device):
         ip = device.pluginProps['ipaddress']
+        itach = iTach(ip)
         cmd = action.props['command']
         response = itach.raw_command(cmd)
         self.debugLog(u"GC plugin response: " + response)
