@@ -22,9 +22,19 @@ class Plugin(indigo.PluginBase):
 
 ############## --- Action Methods --- ##############
 
+    def parseResponse(self, response):
+        if response.startswith('VOL'):
+            volume = response[3:]
+            self.debugLog(u"Volume: " + volume)
+            volumeVar = indigo.variables[417571981]
+            indigo.variable.updateValue(volumeVar, volume)
+
+
+
     def sendCommand(self, action, device):
         ip = device.pluginProps['ipaddress']
         itach = iTach(ip)
         cmd = action.props['command']
         response = itach.raw_command(cmd)
         self.debugLog(u"GC plugin response: " + response)
+        self.parseResponse(response)
