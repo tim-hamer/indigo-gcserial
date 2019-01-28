@@ -2,12 +2,10 @@
 
 #!/usr/bin/env python
 
-"""
-pytach.itach
+#pytach.itach
 
-:copyright: (c) 2012 by Mark McWilliams.
-:license: MIT, see LICENSE for more details.
-"""
+#:copyright: (c) 2012 by Mark McWilliams.
+#:license: MIT, see LICENSE for more details.
 
 import socket
 import struct
@@ -15,12 +13,14 @@ import sys
 import re
 
 class iTach(object):
-    def __init__(self, ip_address):
+    def __init__(self, ip_address, port):
         self.ip_address = ip_address
+        self.port = int(port)
 
     def raw_command(self, command):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((self.ip_address, 4999))
+        s.settimeout(3)
+        s.connect((self.ip_address, self.port))
 
         s.send(command)
         s.send('\r')
@@ -63,5 +63,5 @@ def discover():
             return itach
 
 if __name__ == '__main__':
-    itach = iTach(sys.argv[1])
-    print(itach.raw_command(sys.argv[2]))
+    itach = iTach(sys.argv[1], sys.argv[2])
+    print(itach.raw_command(sys.argv[3]))

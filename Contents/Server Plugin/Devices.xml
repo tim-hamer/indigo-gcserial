@@ -7,6 +7,21 @@
                 <Label>IP Address:</Label>
                 <Description>IP address of the device</Description>
             </Field>
+            <Field id="port" type="menu">
+                <Label>Serial Port</Label>
+                <List>
+                    <Option value="4999">Port 1</Option>
+                    <Option value="5000">Port 2</Option>
+                </List>
+            </Field>
+            <Field id="devicetype" type="menu">
+              <Label>Device Type</Label>
+              <List>
+                    <Option value="tv">Pioner Kuro Plasma</Option>
+                    <Option value="receiver">Pioneer Receiver</Option>
+                    <Option value="elan">Elan S8.6</Option>
+              </List>
+            </Field>
         </ConfigUI>
     </Device>
 </Devices>

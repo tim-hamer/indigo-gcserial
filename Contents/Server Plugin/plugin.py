@@ -3,6 +3,7 @@
 
 from itach import *
 from struct import *
+import binascii
 
 class Plugin(indigo.PluginBase):
 
@@ -23,7 +24,15 @@ class Plugin(indigo.PluginBase):
 
 ############## --- Action Methods --- ##############
 
-    def parseResponse(self, response):
+    def parseResponse(self, devicetype, response):
+        if devicetype == "receiver":
+            self.parseReceiverResponse(response)
+        elif devicetype == "tv":
+            self.parseTVResponse(response)
+        elif devicetype == "elan":
+            self.parseElanResponse(response)
+
+    def parseReceiverResponse(self,response):
         if response.startswith('VOL'):
             volume = response[3:]
             self.debugLog(u"Volume: " + volume)
@@ -34,6 +43,9 @@ class Plugin(indigo.PluginBase):
             volumeVar = indigo.variables[417571981]
             indigo.variable.updateValue(volumeVar, 'MUTE')
 
+    def parseTVResponse(self, response):
+        # TODO: Figure out pioneer responses
+        self.debugLog(u"TV response not implemented yet")
 
     def parseElanResponse(self, response):
         data = unpack_from('!cccccccccccccccccccccccccccccccccccc', response[11:])
@@ -47,18 +59,23 @@ class Plugin(indigo.PluginBase):
         zone1Bin = bin(int(zone1Pwr, base=16))
         self.debugLog(zone1Bin)
 
+    def prepCommand(self, devicetype, cmd):
+        if devicetype == "tv":
+            return '\x02' + cmd + '\x03'
+        return cmd
 
     def sendCommand(self, action, device):
         try:
             ip = device.pluginProps['ipaddress']
-            itach = iTach(ip)
+            port = device.pluginProps['port']
+            devicetype = device.pluginProps['devicetype']
             cmd = action.props['command']
-            response = itach.raw_command(cmd)
-            try:
-                self.debugLog(u"GC plugin response: " + response)
-                self.parseResponse(response)
-            except:
-                self.parseElanResponse(response)
+
+            command = self.prepCommand(devicetype, cmd)
+            itach = iTach(ip, port)
+            response = itach.raw_command(command)
+            self.debugLog(u"GC plugin response: " + response)
+            self.parseResponse(devicetype, response)
         except:
             self.debugLog(u"Caught Exception")
             self.debugLog(sys.exc_info()[0])
